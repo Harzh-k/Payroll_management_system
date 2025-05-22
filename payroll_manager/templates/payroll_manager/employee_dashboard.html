@@ -1,0 +1,123 @@
+{% extends 'payroll_manager/base.html' %}
+{% block content %}
+<div class="container py-4">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Employee Info Card -->
+    <div class="card mb-4 shadow">
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0">Employee's Info</h5>
+        </div>
+        <div class="card-body">
+          <p><strong>Employee Name:</strong> {{ user_info.employee_name }}</p>
+          <p><strong>Department Name:</strong> {{ user_info.department.department_name }}</p>
+            <p><strong>Company:</strong> {{ user_info.company.company_name }}</p>
+            <p><strong>Date Of Join:</strong> {{ user_info.employee_doj }}</p>
+            <p><strong>Grade:</strong> {{ user_info.grade.grade_name }}</p>
+        </div>
+    </div>
+
+    <!-- Address Info Card -->
+    <div class="card mb-4 shadow">
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Employee's Address Info</h5>
+            <a class="btn btn-primary" href="{% url 'changeAddress' emp_id=request.user %}">Update</a>
+        </div>
+        <div class="card-body">
+            <p><strong>Building:</strong> {{ user_info.address.building_details }}</p>
+            <p><strong>Road:</strong> {{ user_info.address.road }}</p>
+            <p><strong>Landmark:</strong> {{ user_info.address.landmark }}</p>
+            <p><strong>City:</strong> {{ user_info.address.city }}</p>
+            <p><strong>State:</strong> {{ user_info.address.state.state_name }}</p>
+            <p><strong>Country:</strong> {{ user_info.address.country }}</p>
+        </div>
+    </div>
+
+    <!-- Salary Info Card -->
+    <div class="card mb-4 shadow">
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0">Employee's Salary Info</h5>
+        </div>
+        <div class="card-body">
+            <p><strong>Basic Amount:</strong> {{ user_paygrade.basic_amt }}</p>
+            <p><strong>Allowance:</strong> {{ user_paygrade.da_amt }}</p>
+            <p><strong>Provident Fund:</strong> {{ user_paygrade.pf_amt }}</p>
+            <p><strong>Health Funds:</strong> {{ user_paygrade.medical_amt }}</p>
+            <p><strong>Gross Salary:</strong> {{ user_pay.gross_salary }}</p>
+            <p><strong>Gross Deduction:</strong> {{ user_pay.gross_dedn }}</p>
+            <p><strong>Net Salary:</strong> {{ user_pay.net_salary }}</p>
+        </div>
+    </div>
+
+    <!-- Achievements Card -->
+    <div class="card mb-4 shadow">
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0">Employee's Achievement List</h5>
+        </div>
+        <div class="card-body">
+            {% for achieve in user_achieve %}
+                <div class="list-group-item mb-3 border rounded p-3">
+                    <h5>#{{ achieve.achievement_id }}</h5>
+                    <p><strong>Achievement Type:</strong> {{ achieve.achievement_type }}</p>
+                    <p><strong>Achievement Date:</strong> {{ achieve.achievement_date }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Leave Requests Card -->
+    <div class="card mb-4 shadow">
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Employee's Leave Requests</h5>
+            <a class="btn btn-primary" href="{% url 'leaveApply' emp_id=request.user %}">Apply Leave</a>
+        </div>
+        <div class="card-body">
+            {% for leave in user_leave %}
+                <div class="list-group-item mb-3 border rounded p-3 {% if leave.is_approved == 1 %}bg-success text-dark{% elif leave.is_approved == 0 %}bg-light{% else %}bg-warning text-dark{% endif %}">
+                    <h5>#{{ leave.leave_id }}</h5>
+                    <p><strong>Leave Date:</strong> {{ leave.leave_date }}</p>
+                    <p><strong>Leave Type:</strong> {{ leave.leave_type }}</p>
+                    <p><strong>Financial Year:</strong> {{ leave.fin_year }}</p>
+                    <p><strong>Status:</strong>
+                        {% if leave.is_approved == 1 %} Approved
+                        {% elif leave.is_approved == 0 %} Not Approved
+                        {% else %} Rejected
+                        {% endif %}
+                    </p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Loan Requests Card -->
+    <div class="card mb-4 shadow">
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Employee's Loan Requests</h5>
+            <a class="btn btn-primary" href="{% url 'loanApply' emp_id=request.user %}">Apply Loan</a>
+        </div>
+        <div class="card-body">
+            {% for loan in user_loan %}
+                <div class="list-group-item mb-3 border rounded p-3 {% if loan.is_approved == 1 %}bg-success text-dark{% elif loan.is_approved == 0 %}bg-light{% else %}bg-warning text-dark{% endif %}">
+                 <!-- card-body {% if loan.is_approved == 1 %}bg-success text-white{% elif loan.is_approved == 0 %}bg-warning{% else %}bg-danger text-white{% endif %}-->
+                    <h5>#{{ loan.loan_id }}</h5>
+                    <p><strong>Employee Id:</strong> {{ loan.employee.employee.user_id }}</p>
+                    <p><strong>Loan Amount:</strong> {{ loan.loan_amount }}</p>
+                    <p><strong>Loan Applied Date:</strong> {{ loan.loan_date }}</p>
+                    <p><strong>Loan Period:</strong> {{ loan.loan_period }}</p>
+                    <p><strong>Loan Reason:</strong> {{ loan.loan_reason }}</p>
+                    <p><strong>Status:</strong>
+                        {% if loan.is_approved == 1 %} Approved
+                        {% elif loan.is_approved == 0 %} Not Approved
+                        {% else %} Rejected
+                        {% endif %}
+                    </p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

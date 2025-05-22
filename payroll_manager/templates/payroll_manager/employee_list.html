@@ -1,0 +1,13 @@
+{% extends 'payroll_manager/base.html' %}
+{% block content %}
+{% for emp in employees %}
+<ul class="list-group" style="margin: 30px auto;">
+    <li class="list-group-item active">Employee's Info:</li>
+    <li class="list-group-item">Employee Name: {{ user_info.employee_name }}</li>
+    <li class="list-group-item">Department Name: {{user_info.department.department_name }}</li>
+    <li class="list-group-item">Company: {{ user_info.company.company_name }}</li>
+    <li class="list-group-item">Date Of Join: {{ user_info.employee_doj }}</li>
+    <li class="list-group-item">Grade: {{ user_info.grade.grade_name }}</li>
+  </ul>
+{% endfor %}
+{% endblock %}

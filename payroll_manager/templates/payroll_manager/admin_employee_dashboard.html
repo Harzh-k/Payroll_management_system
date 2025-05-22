@@ -1,0 +1,126 @@
+{% extends 'payroll_manager/base.html' %}
+
+{% block content %}
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-success" role="alert">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <div class="container mt-5">
+    <!-- Employee Info Card -->
+    <div class="card mb-3 ">
+      <div class="card-header bg-dark text-light  d-flex justify-content-between align-items-center">
+        <span><strong>Employee's Info</strong></span>
+        <a href="{% url 'changeInfo' emp_id=user_info.employee.user_id %}" class="btn btn-sm btn-primary">Update</a>
+      </div>
+      <div class="card-body">
+        <p><strong>Employee Name:</strong> {{ user_info.employee_name }}</p>
+        <p><strong>Department Name:</strong> {{ user_info.department.department_name }}</p>
+        <p><strong>Company:</strong> {{ user_info.company.company_name }}</p>
+        <p><strong>Date Of Join:</strong> {{ user_info.employee_doj }}</p>
+        <p><strong>Grade:</strong> {{ user_info.grade.grade_name }}</p>
+      </div>
+    </div>
+
+    <!-- Employee Address Card -->
+    <div class="card mb-3">
+      <div class="card-header bg-dark text-light d-flex justify-content-between align-items-center">
+        <span><strong>Employee's Address Info</strong></span>
+        <a href="{% url 'changeAddress' emp_id=user_info.employee.user_id %}" class="btn btn-sm btn-primary">Update</a>
+      </div>
+      <div class="card-body">
+        <p><strong>Building:</strong> {{ user_info.address.building_details }}</p>
+        <p><strong>Road:</strong> {{ user_info.address.road }}</p>
+        <p><strong>Landmark:</strong> {{ user_info.address.landmark }}</p>
+        <p><strong>City:</strong> {{ user_info.address.city }}</p>
+        <p><strong>State:</strong> {{ user_info.address.state.state_name }}</p>
+        <p><strong>Country:</strong> {{ user_info.address.country }}</p>
+      </div>
+    </div>
+
+    <!-- Salary Info Card -->
+    <div class="card mb-3">
+      <div class="card-header bg-dark text-light d-flex justify-content-between align-items-center">
+        <span><strong>Employee's Salary Info</strong></span>
+        <a href="{% url 'changePay' emp_id=user_info.employee.user_id %}" class="btn btn-sm btn-primary">Update</a>
+      </div>
+      <div class="card-body">
+        <p><strong>Basic Amount:</strong> {{ user_paygrade.basic_amt }}</p>
+        <p><strong>Allowance:</strong> {{ user_paygrade.da_amt }}</p>
+        <p><strong>Provident Fund:</strong> {{ user_paygrade.pf_amt }}</p>
+        <p><strong>Health Funds:</strong> {{ user_paygrade.medical_amt }}</p>
+        <p><strong>Gross Salary:</strong> {{ user_pay.gross_salary }}</p>
+        <p><strong>Gross Deduction:</strong> {{ user_pay.gross_dedn }}</p>
+        <p><strong>Net Salary:</strong> {{ user_pay.net_salary }}</p>
+      </div>
+    </div>
+
+    <!-- Achievements Card -->
+    <div class="card mb-3">
+      <div class="card-header bg-dark text-light d-flex justify-content-between align-items-center">
+        <span><strong>Employee's Achievement List</strong></span>
+        <a href="{% url 'changeAchievement' emp_id=user_info.employee.user_id %}" class="btn btn-sm btn-primary">Update</a>
+      </div>
+      <div class="card-body">
+        {% for achieve in user_achieve %}
+          <div class="card mb-2">
+            <div class="card-body">
+              <h5 class="card-title">#{{ achieve.achievement_id }}</h5>
+              <p><strong>Achievement Type:</strong> {{ achieve.achievement_type }}</p>
+              <p><strong>Achievement Date:</strong> {{ achieve.achievement_date }}</p>
+            </div>
+          </div>
+        {% empty %}
+          <p>No achievements recorded.</p>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Leave Info Card -->
+    <div class="card mb-3">
+      <div class="card-header bg-dark text-light">
+        <span><strong>Employee's Off Days List</strong></span>
+      </div>
+      <div class="card-body">
+        {% for leave in user_leave %}
+          <div class="card mb-2">
+            <div class="card-body {% if leave.is_approved == 1 %}bg-success text-dark{% elif leave.is_approved == 0 %}bg-light{% else %}bg-warning text-dark{% endif %}">
+              <h5 class="card-title">#{{ leave.leave_id }}</h5>
+              <p><strong>Leave Date:</strong> {{ leave.leave_date }}</p>
+              <p><strong>Leave Type:</strong> {{ leave.leave_type }}</p>
+              <p><strong>Financial Year:</strong> {{ leave.fin_year }}</p>
+              <p><strong>Status:</strong> {% if leave.is_approved == 1 %} Approved {% elif leave.is_approved == 0 %} Not Approved {% else %} Rejected {% endif %}</p>
+            </div>
+          </div>
+        {% empty %}
+          <p>No leave records found.</p>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Loan Info Card -->
+    <div class="card mb-3">
+      <div class="card-header bg-dark text-light">
+        <span><strong>Employee's Loan Requests List</strong></span>
+      </div>
+      <div class="card-body">
+        {% for loan in user_loan %}
+          <div class="card mb-2">
+            <div class="card-body {% if loan.is_approved == 1 %}bg-success text-dark{% elif loan.is_approved == 0 %}bg-light{% else %}bg-warning text-dark{% endif %}">
+              <h5 class="card-title">#{{ loan.loan_id }}</h5>
+              <p><strong>Employee Id:</strong> {{ loan.employee.employee.user_id }}</p>
+              <p><strong>Loan Amount:</strong> {{ loan.loan_amount }}</p>
+              <p><strong>Loan Applied Date:</strong> {{ loan.loan_date }}</p>
+              <p><strong>Loan Period:</strong> {{ loan.loan_period }}</p>
+              <p><strong>Loan Reason:</strong> {{ loan.loan_reason }}</p>
+              <p><strong>Status:</strong> {% if loan.is_approved == 1 %} Approved {% elif loan.is_approved == 0 %} Not Approved {% else %} Rejected {% endif %}</p>
+            </div>
+          </div>
+        {% empty %}
+          <p>No loan records found.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+{% endblock %}

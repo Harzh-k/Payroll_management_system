@@ -1,0 +1,60 @@
+{% extends 'payroll_manager/base.html' %}
+{% block content %}
+<div class="container bg-light border rounded p-5" style="width: 40%;text-align: center;margin: 75px auto;">
+    <h1 class="display-6">Enter Leave Details</h1>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="user_id">Leave Type:</label>
+          {{form.leave_type}}
+        </div>
+        <div class="form-group">
+          <label for="password">Leave date:</label>
+          {{form.leave_date}}
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const input = document.querySelector("input[name='leave_date'], #leave_date_input, input[type='date']");
+        if (input) {
+            const today = new Date();
+            const future = new Date();
+            future.setDate(today.getDate() + 15);
+
+            const formatDate = (d) => {
+                const yyyy = d.getFullYear();
+                const mm = String(d.getMonth() + 1).padStart(2, '0');
+                const dd = String(d.getDate()).padStart(2, '0');
+                return `${yyyy}-${mm}-${dd}`;
+            };
+
+            const minDate = formatDate(today);
+            const maxDate = formatDate(future);
+
+            input.setAttribute("min", minDate);
+            input.setAttribute("max", maxDate);
+
+            console.log("✅ Leave date allowed from", minDate, "to", maxDate, "(excluding weekends)");
+
+            // Add event listener to validate selection
+            input.addEventListener("input", function () {
+                const selectedDate = new Date(this.value);
+                const day = selectedDate.getDay(); // 0 = Sunday, 6 = Saturday
+
+                if (day === 0 || day === 6) {
+                    alert("❌ Weekends are not allowed. Please choose a weekday.");
+                    this.value = "";
+                }
+            });
+        } else {
+            console.error("❌ Date input not found.");
+        }
+    });
+</script>
+
+
+
+
+{% endblock %}
